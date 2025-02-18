@@ -1,15 +1,13 @@
 FROM node:22-alpine
 
-WORKDIR /usr/src/app
+RUN addgroup app && adduser -S -G app app
+USER app
 
-COPY ./package.json ./
-COPY ./package-lock.json ./
-
-
+WORKDIR /app
+COPY package*.json ./
 RUN npm install
-
-COPY . .
+COPY . . 
 
 EXPOSE 5000
 
-CMD [ "npm", "run", "dev" ]
+CMD ["npm", "start"]
