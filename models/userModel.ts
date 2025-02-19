@@ -4,20 +4,19 @@ import bcrypt from "bcryptjs";
 interface IUserSchema {
   email: string;
   emailVerified: boolean;
-  userName: string;
-  emergencyContact: number;
-  emergencyName: string;
-  gender: string;
-  dob: Date;
-  createdAt: Date;
-  idType: string;
-  idNumber: number;
-  nameCard: string;
-  namePhysician: string;
-  pincode: number;
-  state: string;
+  userName?: string;
+  emergencyContact?: number;
+  emergencyName?: string;
+  gender?: string;
+  dob?: Date;
+  createdAt?: Date;
+  idType?: string;
+  idNumber?: number;
+  nameCard?: string;
+  namePhysician?: string;
+  pincode?: number;
+  state?: string;
   password: string;
-  confirmPassword: string;
 }
 
 const UserSchema: Schema<IUserSchema> = new Schema({
@@ -41,17 +40,17 @@ const UserSchema: Schema<IUserSchema> = new Schema({
     minlength: 8,
     select: false,
   },
-  confirmPassword: {
-    type: String,
-    required: [true, "Please confirm your password"],
-    validate: {
-      validator: function (el) {
-        return el == this.password;
-      },
-      message: "Passwords are not the same!",
-    },
-  },
-});
+  // confirmPassword: {
+  //   type: String,
+  //   required: [true, "Please confirm your password"],
+  //   validate: {
+  //     validator: function (el) {
+  //       return el == this.password;
+  //     },
+  //     message: "Passwords are not the same!",
+  //   },
+  // },
+},{ timestamps: true });
 
 UserSchema.pre("save", async function (next) {
   try {
@@ -59,26 +58,17 @@ UserSchema.pre("save", async function (next) {
       next();
     }
     this.password = await bcrypt.hash(this.password, 12);
-    this.confirmPassword = undefined;
+    // this.confirmPassword = undefined;
     next();
   } catch (err: any) {
     next(err);
   }
 });
 
-UserSchema.methods.correctPassword = async function ({
-  databasePassword,
-  userPassword,
-}: {
-  userPassword: string;
-  databasePassword: string;
-}) {
-  return await bcrypt.compare(databasePassword, userPassword);
+UserSchema.methods.correctPassword = async function (candidatePassword: string): Promise<boolean> {
+  return bcrypt.compare(candidatePassword, this.password);
 };
 
-const UserModel: Model<IUserSchema> = mongoose.model<IUserSchema>(
-  "User",
-  UserSchema
-);
+const UserModel: Model<IUserSchema> = mongoose.model<IUserSchema>("User", UserSchema);
 
 export default UserModel;

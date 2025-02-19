@@ -15,13 +15,17 @@
   "description": "",
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
+    "@types/cors": "^2.8.17",
+    "@types/cryptojs": "^3.1.33",
     "@types/dotenv": "^6.1.1",
     "@types/express": "^4.17.21",
     "@types/jest": "^29.5.14",
     "@types/mongoose": "^5.11.96",
     "@types/multer": "^1.4.12",
     "@types/node": "^22.13.4",
+    "@types/nodemailer": "^6.4.17",
     "bcryptjs": "^3.0.1",
+    "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "jest": "^29.7.0",
@@ -31,6 +35,10 @@
     "typescript": "^5.7.3"
   },
   "dependencies": {
+    "@types/jsonwebtoken": "^9.0.8",
+    "crypto": "^1.0.1",
+    "jsonwebtoken": "^9.0.2",
+    "nodemailer": "^6.10.0",
     "nodemon": "^3.1.9"
   }
 }

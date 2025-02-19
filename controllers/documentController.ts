@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 import crypto from "crypto";
 import { Request, Response } from "express";
-import { DocumentModel } from "../models/documentModel";
+import  DocumentModel  from "../models/documentModel";
 import multer from "multer";
 
 interface MulterRequest extends Request {

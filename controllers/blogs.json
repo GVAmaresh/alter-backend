@@ -1,0 +1,39 @@
+[
+    {
+      "photo_url": "https://example.com/image1.jpg",
+      "heading": "Understanding AI in 2025",
+      "description": "A deep dive into how artificial intelligence is evolving in 2025.",
+      "date": "2025-02-15"
+    },
+    {
+      "photo_url": "https://example.com/image2.jpg",
+      "heading": "The Future of Web Development",
+      "description": "Exploring the latest trends in web development and what to expect in the coming years.",
+      "date": "2025-02-10"
+    },
+    {
+      "photo_url": "https://example.com/image3.jpg",
+      "heading": "Cybersecurity in the Digital Age",
+      "description": "How to stay secure in an increasingly connected world.",
+      "date": "2025-02-05"
+    },
+    {
+      "photo_url": "https://example.com/image4.jpg",
+      "heading": "Cloud Computing Innovations",
+      "description": "New advancements in cloud technology that are reshaping businesses.",
+      "date": "2025-01-28"
+    },
+    {
+      "photo_url": "https://example.com/image5.jpg",
+      "heading": "Data Science for Beginners",
+      "description": "An introductory guide to data science and machine learning.",
+      "date": "2025-01-20"
+    },
+    {
+      "photo_url": "https://example.com/image6.jpg",
+      "heading": "Blockchain Beyond Cryptocurrency",
+      "description": "Understanding blockchain applications outside of digital currency.",
+      "date": "2025-01-10"
+    }
+  ]
+  
