@@ -8,14 +8,12 @@ import { sendVerificationEmail } from "./emailVerifier";
 
 dotenv.config();
 
-
-
-const signToken = (id: string): string => {
+export const signToken = (id: string): string => {
   const secret = process.env.JWT_SECRET;
   if (!secret) throw new Error("JWT_SECRET is not defined");
   const expire = process.env.JWT_EXPIRES_IN;
   if (!expire) throw new Error("JWT_EXPIRE is not defined ");
-  return jwt.sign({ id }, (secret as string), {
+  return jwt.sign({ id }, secret as string, {
     expiresIn: "9d",
   });
 };
@@ -26,6 +24,7 @@ export const emailPasswordVerify = async (
 ): Promise<void> => {
   try {
     const { email, password } = req.body;
+    console.log(email, password);
     if (!email || !password) {
       res.status(400).json({ message: "Email or Password is missing" });
       return;
@@ -43,45 +42,56 @@ export const emailPasswordVerify = async (
       res.status(201).json({
         token,
         verifyEmail: false,
+        isCorrectPassword: false,
         message: "Email verification has been sent",
       });
       return;
     }
-
-    if (!bcrypt.compare(password, user.password)) {
+    console.log(password, user.password);
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
       res.status(401).json({
         isCorrectPassword: false,
         message: "Incorrect password",
       });
       return;
-    }
+    }    
 
+    const token = signToken(user._id.toString());
     if (!user.emailVerified) {
-      const token = signToken(user._id.toString());
-      await sendVerificationEmail(email);
+      try {
+        await sendVerificationEmail(email);
+      } catch (err) {
+        console.error("Failed to send verification email:", err);
+        res.status(500).json({ message: "Error sending verification email" });
+        return;
+      }
 
-      res.status(201).json({
+      res.status(202).json({
         token,
         verifyEmail: false,
+        isCompleteUserDetails: false,
+        isValid: false,
         message: "Email verification has been sent",
       });
       return;
     }
 
     if (!user.userName || !user.emergencyContact || !user.gender || !user.dob) {
-      const token = signToken(user._id.toString());
-
-      res.status(400).json({
+      res.status(200).json({
         token,
+        verifyEmail: true,
         isCompleteUserDetails: false,
+        isValid: false,
         message: "User details are incomplete",
       });
       return;
     }
 
-    const token = signToken(user._id.toString());
-    res.status(200).json({
+    res.status(201).json({
       isValid: true,
+      verifyEmail: true,
+      isCompleteUserDetails: true,
       message: "User is valid",
       token,
     });
@@ -99,7 +109,7 @@ export const protect = async (
   try {
     let token: string | undefined;
     if (
-      req.headers.authorization &&
+      req.headers&&req.headers.authorization &&
       req.headers.authorization.startsWith("Bearer")
     ) {
       token = req.headers.authorization.split(" ")[1];
@@ -125,6 +135,6 @@ export const protect = async (
     next();
   } catch (err) {
     console.error("Error in protect middleware", err);
-    res.status(500).json({ message: "Internal Server Error" });
+    res.status(404).json({ message: "Unauthorized access" });
   }
 };

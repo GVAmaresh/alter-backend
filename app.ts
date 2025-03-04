@@ -13,6 +13,7 @@ dotenv.config();
 
 const app = express();
 app.use(cors());
+
 app.use(express.json());
 
 app.use("/v1/user", userRouter);
@@ -22,4 +23,7 @@ app.use("/v1/master-health", masterHealthRouter);
 app.use("/v1/chatBot", chatBotRouter)
 app.use("/v1/blogs", blogRouter)
 
+
 export default app;
+
+// artillery run performance.yml

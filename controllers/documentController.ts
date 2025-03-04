@@ -2,8 +2,7 @@ import fs from "fs";
 import path from "path";
 import crypto from "crypto";
 import { Request, Response } from "express";
-import  DocumentModel  from "../models/documentModel";
-import multer from "multer";
+import DocumentModel from "../models/documentModel";
 
 interface MulterRequest extends Request {
   file?: Express.Multer.File;
@@ -14,15 +13,29 @@ export const storeDocument = async (
   res: Response
 ): Promise<void> => {
   try {
-    const { date, userId } = req.body;
+    let date;
+    if (req.body.date) date = req.body.date;
+    if (req.query.date) date = req.query.date;
+
     const file = req.file;
-    if (!date || !userId) {
+    console.log("Request Body:", req.body);
+    console.log("Uploaded File:", req.file);
+    console.log("User:", res.locals.user);
+    if (!date) {
       res.status(400).json({ message: "Date or userId is not defined" });
+      return;
     }
     if (!file) {
       res.status(400).json({ message: "No file uploaded" });
       return;
     }
+
+    const user = res.locals.user;
+    if (!user) {
+      res.status(401).json({ message: "User not LoggedIN" });
+      return;
+    }
+    const userId = user._id;
     const fileId = crypto.randomBytes(16).toString("hex");
     const salt = crypto.randomBytes(8).toString("hex");
 
@@ -80,6 +93,11 @@ export const fetchDocumentByDate = async (
     const { date } = req.body;
     if (!date) {
       res.status(400).json({ message: "Date not provided" });
+      return;
+    }
+    const user = res.locals.user;
+    if (!user) {
+      res.status(401).json({ message: "User not LoggedIN" });
       return;
     }
     const searchDate = new Date(date);

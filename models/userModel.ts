@@ -16,6 +16,7 @@ interface IUserSchema {
   namePhysician?: string;
   pincode?: number;
   state?: string;
+  age?:number
   password: string;
 }
 
@@ -25,8 +26,9 @@ const UserSchema: Schema<IUserSchema> = new Schema({
   userName: { type: String },
   emergencyContact: { type: Number },
   emergencyName: { type: String },
-  gender: { type: String, enum: ["male", "female", "other"] },
+  gender: { type: String, enum: ["Male", "Female", "other"] },
   dob: { type: Date },
+  age: {type:Number},
   createdAt: { type: Date, default: Date.now },
   idType: { type: String },
   idNumber: { type: Number },

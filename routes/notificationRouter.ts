@@ -9,5 +9,6 @@ const router = express.Router();
 
 router.get("/get-notifications", protect, getAllNotification);
 router.post("/create-notification", protect, createNotification);
+// router.post("/delete-notification", protect)
 
 export default router;

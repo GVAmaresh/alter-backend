@@ -6,6 +6,11 @@ import app from "./app";
 dotenv.config()
 
 const port = process.env.PORT || 5000;
+process.on('uncaughtException', err => {
+  console.log('UNCAUGHT EXCEPTION! 💥 Shutting down...');
+  console.log(err.name, err.message);
+  process.exit(1);
+});
 
 const DB =
   process.env?.DATABASE.replace("<password>", process.env?.DB_PASSWORD) ||
@@ -18,6 +23,21 @@ app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
-app.listen(port, () => {
+const server = app.listen(port, () => {
   return console.log(`Express is listening at http://localhost:${port}`);
+});
+
+process.on('unhandledRejection', (err:any) => {
+  console.log('UNHANDLED REJECTION! 💥 Shutting down...');
+  console.log(err.name, err.message);
+  server.close(() => {
+    process.exit(1);
+  });
+});
+
+process.on('SIGTERM', () => {
+  console.log('👋 SIGTERM RECEIVED. Shutting down gracefully');
+  server.close(() => {
+    console.log('💥 Process terminated!');
+  });
 });
